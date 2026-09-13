@@ -1,1 +1,428 @@
-kya dekh rha h
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<!-- This site is hosted on Netlify. Anyone can build and deploy a site
+     like this one for free: https://netlify.new/?utm_campaign=ai-legible&utm_source=comment&utm_medium=referral&utm_id=0f268382-fe4c-4c8c-bf56-9148ac7c0a01
+     Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
+<meta name="hosting-provider" content="Netlify">
+<meta name="netlify-deploy" content="https://netlify.new/?utm_campaign=ai-legible&amp;utm_source=meta&amp;utm_medium=referral&amp;utm_id=0f268382-fe4c-4c8c-bf56-9148ac7c0a01">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aayan | Security & Dev</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Cyberpunk / Hacker Aesthetic Palette */
+            --bg-color: #050505;
+            --bg-secondary: #0a0f14;
+            --text-main: #e6edf3;
+            --text-dim: #8b949e;
+            
+            /* Parrot OS / Security Accents */
+            --accent: #00ff9d; /* Bright Cyan/Green */
+            --accent-dim: rgba(0, 255, 157, 0.1);
+            --danger: #ff5f56;
+            
+            --nav-bg: rgba(5, 5, 5, 0.85);
+            --border: 1px solid #30363d;
+            --card-radius: 12px;
+        }
+
+        /* Reset & Base */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'JetBrains Mono', monospace; scroll-behavior: smooth; cursor: none; }
+        
+        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; overflow-x: hidden; }
+
+        /* --- Custom Cursor --- */
+        #cursor {
+            width: 20px; height: 20px; border: 2px solid var(--accent);
+            border-radius: 50%; position: fixed; pointer-events: none;
+            z-index: 9999; transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.2s;
+        }
+        #cursor.hovered { background: var(--accent-dim); width: 40px; height: 40px; border-color: transparent; }
+        
+        /* Disable custom cursor on mobile */
+        @media (max-width: 768px) { #cursor { display: none; } * { cursor: auto; } }
+
+        /* --- Navigation --- */
+        nav {
+            position: fixed; top: 0; width: 100%; padding: 1.2rem 5%;
+            background: var(--nav-bg); backdrop-filter: blur(12px);
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 1000; border-bottom: var(--border);
+        }
+
+        .logo { font-weight: 700; color: var(--text-main); font-size: 1.4rem; letter-spacing: -1px; }
+        .logo span { color: var(--accent); }
+
+        .nav-links { display: flex; gap: 30px; list-style: none; }
+        .nav-links a { text-decoration: none; color: var(--text-dim); font-size: 0.9rem; transition: 0.3s; position: relative; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+        .nav-links a::after {
+            content: ''; position: absolute; width: 0; height: 2px;
+            bottom: -5px; left: 0; background-color: var(--accent);
+            transition: width 0.3s;
+        }
+        .nav-links a:hover::after { width: 100%; }
+
+        /* Mobile Menu */
+        .hamburger { display: none; cursor: pointer; flex-direction: column; gap: 6px; }
+        .hamburger span { width: 25px; height: 2px; background: var(--text-main); transition: 0.3s; }
+        
+        @media (max-width: 768px) {
+            .hamburger { display: flex; }
+            .nav-links {
+                position: absolute; top: 100%; left: 0; width: 100%;
+                background: var(--bg-secondary); flex-direction: column;
+                padding: 40px; text-align: center; transform: translateY(-150%);
+                transition: transform 0.4s ease; border-bottom: var(--border);
+            }
+            .nav-links.active { transform: translateY(0); }
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            min-height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: flex-start;
+            padding: 0 10%; position: relative;
+        }
+        
+        .hero-tag { color: var(--accent); font-size: 1rem; margin-bottom: 20px; display: inline-block; }
+        .hero h1 { font-size: clamp(2.5rem, 8vw, 5rem); line-height: 1.1; margin-bottom: 20px; }
+        .hero p { max-width: 600px; color: var(--text-dim); margin-bottom: 40px; font-size: 1.1rem; }
+        
+        .btn {
+            padding: 12px 30px; background: transparent; border: 1px solid var(--accent);
+            color: var(--accent); font-weight: 600; text-decoration: none;
+            border-radius: 4px; transition: 0.3s; display: inline-block;
+        }
+        .btn:hover { background: var(--accent-dim); transform: translateY(-3px); }
+        .btn-fill { background: var(--accent); color: #000; }
+        .btn-fill:hover { background: #00e68e; }
+
+        /* --- Terminal / About --- */
+        .container { max-width: 1200px; margin: 0 auto; padding: 100px 20px; }
+        .section-header { margin-bottom: 60px; display: flex; align-items: center; gap: 20px; }
+        .section-header h2 { font-size: 2rem; white-space: nowrap; }
+        .section-header .line { height: 1px; width: 100%; background: #30363d; }
+
+        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+        
+        /* Terminal Styling */
+        .terminal-window {
+            background: #0d1117; border-radius: 8px; border: 1px solid #30363d;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); overflow: hidden;
+        }
+        .terminal-bar {
+            background: #161b22; padding: 10px 15px; display: flex; gap: 8px; border-bottom: 1px solid #30363d;
+        }
+        .circle { width: 12px; height: 12px; border-radius: 50%; }
+        .red { background: #ff5f56; } .yellow { background: #ffbd2e; } .green { background: #27c93f; }
+        
+        .terminal-body { padding: 20px; font-size: 0.9rem; color: #c9d1d9; }
+        .command { color: var(--accent); }
+        .output { color: var(--text-dim); margin-bottom: 15px; display: block; }
+        .blink { animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        @media (max-width: 900px) { .about-grid { grid-template-columns: 1fr; } }
+
+        /* --- Arsenal / Skills --- */
+        .arsenal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .arsenal-card {
+            background: var(--bg-secondary); padding: 25px; border-radius: var(--card-radius);
+            border: var(--border); transition: 0.3s;
+        }
+        .arsenal-card:hover { border-color: var(--accent); transform: translateY(-5px); }
+        .arsenal-icon { font-size: 2rem; color: var(--accent); margin-bottom: 15px; }
+        .arsenal-card h3 { margin-bottom: 15px; font-size: 1.1rem; }
+        .tech-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+        .tech-tag {
+            font-size: 0.75rem; background: rgba(255,255,255,0.05);
+            padding: 4px 10px; border-radius: 20px; color: var(--text-dim);
+        }
+
+        /* --- Projects --- */
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
+        .project-card {
+            background: var(--bg-secondary); border-radius: var(--card-radius); overflow: hidden;
+            border: var(--border); transition: 0.3s; display: flex; flex-direction: column;
+        }
+        .project-card:hover { transform: translateY(-7px); box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5); }
+        .card-content { padding: 25px; flex-grow: 1; }
+        .folder-icon { color: var(--accent); font-size: 2rem; margin-bottom: 20px; display: block; }
+        .card-title { font-size: 1.3rem; margin-bottom: 10px; color: var(--text-main); }
+        .card-desc { font-size: 0.9rem; color: var(--text-dim); margin-bottom: 20px; }
+        .card-tech-list { display: flex; gap: 15px; font-size: 0.8rem; color: var(--text-dim); margin-top: auto; }
+        .card-links { padding: 15px 25px; border-top: 1px solid #30363d; display: flex; justify-content: flex-end; gap: 15px; }
+        .card-links a { color: var(--text-main); font-size: 1.2rem; transition: 0.2s; }
+        .card-links a:hover { color: var(--accent); }
+
+        /* --- Footer --- */
+        footer { text-align: center; padding: 50px 20px; border-top: var(--border); color: var(--text-dim); font-size: 0.85rem; }
+        .social-footer { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; font-size: 1.5rem; }
+        .social-footer a { color: var(--text-dim); transition: 0.3s; }
+        .social-footer a:hover { color: var(--accent); transform: translateY(-3px); }
+
+    </style>
+</head>
+<body>
+
+    <div id="cursor"></div>
+
+    <nav>
+        <div class="logo">aayan<span>.dev</span></div>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#home">_hello</a></li>
+            <li><a href="#about">_about</a></li>
+            <li><a href="#arsenal">_arsenal</a></li>
+            <li><a href="#projects">_projects</a></li>
+            <li><a href="#contact">_contact</a></li>
+        </ul>
+        <div class="hamburger" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </div>
+    </nav>
+
+    <section class="hero" id="home">
+        <span class="hero-tag">Hi, my name is</span>
+        <h1>Aayan Singh.</h1>
+        <h1 style="color: var(--text-dim);">I break things to fix them.</h1>
+        <p>I am a Cybersecurity Enthusiast and Web Developer based in India. I specialize in Penetration Testing on Parrot OS and building secure, high-performance web applications.</p>
+        <div style="display: flex; gap: 20px;">
+            <a href="#projects" class="btn btn-fill">Check my work</a>
+            <a href="#contact" class="btn">Get in touch</a>
+        </div>
+    </section>
+
+    <section id="about" class="container">
+        <div class="section-header">
+            <h2><span style="color:var(--accent)">01.</span> About Me</h2>
+            <div class="line"></div>
+        </div>
+        
+        <div class="about-grid">
+            <div class="about-text">
+                <p style="margin-bottom: 15px; color: var(--text-dim);">
+                    Hello! My interest in computers started when I tried to edit my first video, but it turned into an obsession with how systems work under the hood. 
+                </p>
+                <p style="margin-bottom: 15px; color: var(--text-dim);">
+                    Fast forward to today, I use <span style="color: var(--accent)">Parrot Security OS</span> as my daily driver. I enjoy CTF challenges and analyzing network traffic.
+                </p>
+                <p style="color: var(--text-dim);">
+                    When I'm not in the terminal, I'm editing videos using Adobe Premiere Pro, blending creativity with technical logic.
+                </p>
+            </div>
+            
+            <div class="terminal-window">
+                <div class="terminal-bar">
+                    <div class="circle red"></div>
+                    <div class="circle yellow"></div>
+                    <div class="circle green"></div>
+                    <span style="font-size: 0.8rem; margin-left: 10px; color: #8b949e;">aayan@parrot-sec</span>
+                </div>
+                <div class="terminal-body">
+                    <div style="margin-bottom: 10px;">
+                        <span class="command">aayan@parrot:~$</span> <span style="color: #fff">whoami</span>
+                        <span class="output">root</span>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <span class="command">aayan@parrot:~$</span> <span style="color: #fff">cat current_focus.txt</span>
+                        <span class="output">
+                            > Ethical Hacking<br>
+                            > Network Security<br>
+                            > Full Stack Development<br>
+                            > Python Automation
+                        </span>
+                    </div>
+                    <div>
+                        <span class="command">aayan@parrot:~$</span> <span class="blink">_</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="arsenal" class="container">
+        <div class="section-header">
+            <h2><span style="color:var(--accent)">02.</span> My Arsenal</h2>
+            <div class="line"></div>
+        </div>
+
+        <div class="arsenal-grid">
+            <div class="arsenal-card">
+                <i class="fas fa-user-secret arsenal-icon"></i>
+                <h3>Offensive Security</h3>
+                <div class="tech-tags">
+                    <span class="tech-tag">Metasploit</span>
+                    <span class="tech-tag">Burp Suite</span>
+                    <span class="tech-tag">Nmap</span>
+                    <span class="tech-tag">Wireshark</span>
+                    <span class="tech-tag">Hydra</span>
+                </div>
+            </div>
+
+            <div class="arsenal-card">
+                <i class="fas fa-code arsenal-icon"></i>
+                <h3>Web Development</h3>
+                <div class="tech-tags">
+                    <span class="tech-tag">HTML5</span>
+                    <span class="tech-tag">CSS3</span>
+                    <span class="tech-tag">JavaScript</span>
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">Bash Scripting</span>
+                </div>
+            </div>
+
+            <div class="arsenal-card">
+                <i class="fas fa-video arsenal-icon"></i>
+                <h3>Creative/Editing</h3>
+                <div class="tech-tags">
+                    <span class="tech-tag">Premiere Pro</span>
+                    <span class="tech-tag">After Effects</span>
+                    <span class="tech-tag">Filmora</span>
+                    <span class="tech-tag">Photoshop</span>
+                </div>
+            </div>
+            
+            <div class="arsenal-card">
+                <i class="fas fa-terminal arsenal-icon"></i>
+                <h3>Operating Systems</h3>
+                <div class="tech-tags">
+                    <span class="tech-tag">Parrot OS</span>
+                    <span class="tech-tag">Kali Linux</span>
+                    <span class="tech-tag">Windows</span>
+                    <span class="tech-tag">Ubuntu</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="container">
+        <div class="section-header">
+            <h2><span style="color:var(--accent)">03.</span> Projects & Logs</h2>
+            <div class="line"></div>
+        </div>
+
+        <div class="project-grid">
+            
+            <div class="project-card">
+                <div class="card-content">
+                    <i class="far fa-folder folder-icon"></i>
+                    <h3 class="card-title">Network Vulnerability Lab</h3>
+                    <p class="card-desc">Simulated a corporate network attack using Metasploit. Identified weak SMB configurations and patched them.</p>
+                    <div class="card-tech-list">
+                        <span>VirtualBox</span>
+                        <span>Metasploit</span>
+                        <span>Nmap</span>
+                    </div>
+                </div>
+                <div class="card-links">
+                    <a href="#" title="View Code"><i class="fab fa-github"></i></a>
+                    <a href="#" title="Live Demo"><i class="fas fa-external-link-alt"></i></a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="card-content">
+                    <i class="far fa-folder folder-icon"></i>
+                    <h3 class="card-title">Hacking Theme Dashboard</h3>
+                    <p class="card-desc">A visually immersive sci-fi dashboard layout built with pure CSS Grid and JS animations.</p>
+                    <div class="card-tech-list">
+                        <span>HTML</span>
+                        <span>CSS</span>
+                        <span>JS</span>
+                    </div>
+                </div>
+                <div class="card-links">
+                    <a href="#" title="View Code"><i class="fab fa-github"></i></a>
+                    <a href="#" title="Live Demo"><i class="fas fa-external-link-alt"></i></a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="card-content">
+                    <i class="far fa-folder folder-icon"></i>
+                    <h3 class="card-title">Orange Theme Login</h3>
+                    <p class="card-desc">Minimalist secure login interface featuring input validation and responsive design.</p>
+                    <div class="card-tech-list">
+                        <span>HTML</span>
+                        <span>CSS</span>
+                    </div>
+                </div>
+                <div class="card-links">
+                    <a href="https://orange-website-aayan.netlify.app/login.html" target="_blank"><i class="fas fa-external-link-alt"></i></a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="card-content">
+                    <i class="fas fa-video folder-icon"></i>
+                    <h3 class="card-title">Tech Montage Edits</h3>
+                    <p class="card-desc">A collection of high-energy video edits synced to music, showcasing transitions and VFX skills.</p>
+                    <div class="card-tech-list">
+                        <span>Premiere Pro</span>
+                        <span>After Effects</span>
+                    </div>
+                </div>
+                <div class="card-links">
+                    <a href="#" title="Watch on YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="contact" class="container" style="text-align: center; padding-bottom: 50px;">
+        <p style="color: var(--accent); margin-bottom: 20px;">04. What's Next?</p>
+        <h2 style="font-size: 3rem; margin-bottom: 20px;">Get In Touch</h2>
+        <p style="max-width: 500px; margin: 0 auto 40px auto; color: var(--text-dim);">
+            Whether you have a question about my projects, want to discuss security, or just want to say hi, my inbox is always open.
+        </p>
+        <a href="mailto:sample@gmail.com" class="btn btn-fill" style="padding: 15px 40px;">Say Hello</a>
+    </section>
+
+    <footer>
+        <div class="social-footer">
+            <a href="#"><i class="fab fa-github"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fab fa-discord"></i></a>
+        </div>
+        <p>Designed & Built by Aayan Singh</p>
+        <p style="font-size: 0.7rem; margin-top: 5px; color: #444;">System Status: Normal</p>
+    </footer>
+
+    <script>
+        // Hamburger Menu
+        function toggleMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+
+        // Custom Cursor Logic
+        const cursor = document.getElementById('cursor');
+        const links = document.querySelectorAll('a, button, .hamburger');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        links.forEach(link => {
+            link.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+            link.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        });
+
+        // Close menu on click
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navLinks').classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>
